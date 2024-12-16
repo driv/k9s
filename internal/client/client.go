@@ -545,7 +545,10 @@ func (a *APIClient) SwitchContext(name string) error {
 	if err := a.config.SwitchContext(name); err != nil {
 		return err
 	}
-	if err := a.invalidateCache(); err != nil {
+
+	if !a.CheckConnectivity() {
+		log.Debug().Msg("No connectivity, skipping cache invalidation")
+	} else if err := a.invalidateCache(); err != nil {
 		return err
 	}
 	a.reset()
